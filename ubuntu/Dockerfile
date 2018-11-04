@@ -30,8 +30,8 @@ RUN ln -s linux-* linux
 
 WORKDIR /src/linux/tools/perf
 
-# segfault patch: https://lkml.org/lkml/2018/8/9/891
-RUN sed -e '/struct nsinfo \*nnsi;/a \\\n\tif (nsi == NULL)\n\t\treturn NULL;' -i util/namespaces.c
+COPY patches/ /src/patches/
+RUN for patch in /src/patches/*.patch; do patch -p3 <"${patch}"; done
 
 # Compile perf statically
 RUN make LDFLAGS=-static NO_GTK2=1 NO_LIBNUMA=1 NO_LIBPERL=1 NO_LIBPYTHON=1 NO_JVMTI=1 
